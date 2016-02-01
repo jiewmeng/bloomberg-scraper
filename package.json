@@ -4,7 +4,9 @@
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
-    "start": "electron main.js"
+    "start": "electron main.js",
+    "dev": "electron --debug main.js",
+    "rebuild": "electron-rebuild main.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +25,14 @@
   },
   "homepage": "https://github.com/atom/electron-quick-start#readme",
   "devDependencies": {
-    "electron-prebuilt": "^0.36.0"
+    "electron-debug": "^0.5.1",
+    "electron-prebuilt": "^0.36.0",
+    "electron-rebuild": "^1.1.1",
+    "mongodb": "^2.1.4",
+    "mongoose": "^4.3.6",
+    "x-ray": "^2.0.3"
+  },
+  "dependencies": {
+    "bluebird": "^3.1.1"
   }
 }

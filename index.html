@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Hello World!</title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chrome <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
-  </body>
+	<head>
+		<meta charset="UTF-8">
+		<title>Bloomberg Scrapper</title>
+	</head>
+	<body>
+		<button onclick="javascript:startScrape()">Start Scraping</button>
+		<button onclick="javascript:startScrapeCompanies()">Start Scraping Companies</button>
+
+		<form id="frmSearch">
+			<label>Company</label>
+			<input id="txtCompanyName" type="search" placeholder="Company name here ..." />
+			<input type="submit" value="Search" />
+		</form>
+
+		<div id="status"></div>
+
+		<script src="./app.js"></script>
+	</body>
 </html>
