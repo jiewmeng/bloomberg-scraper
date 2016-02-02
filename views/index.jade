@@ -1,0 +1,33 @@
+doctype html
+html(lang="en")
+	head
+		title Bloomberg Scrapper
+		meta(name="viewport", content="width=device-width, initial-scale=1.0")
+		link(rel="stylesheet", href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css")
+		link(rel="stylesheet", href="https://fonts.googleapis.com/icon?family=Material+Icons")
+	body
+		div.mdl-layout.mdl-js-layout.mdl-layout--fixed-header
+			header.mdl-layout__header
+				div.mdl-layout__header-row
+					span.mdl-layout-title Bloomberg Scrapper
+					div.mdl-layout-spacer
+					nav.mdl-navigation.mdl-layout--large-screen-only
+						a(href="/bloomberg/updateCompanies").mdl-navigation__link Update companies
+						a(href="/bloomberg/populateProfiles").mdl-navigation__link Populate profiles
+
+			div.mdl-layout__drawer
+				span.mdl-layout-title Bloomberg Scrapper
+				nav.mdl-navigation
+					a(href="/bloomberg/updateCompanies").mdl-navigation__link Update companies
+					a(href="/bloomberg/populateProfiles").mdl-navigation__link Populate profiles
+
+			div.mdl-layout__content
+				div.mdl-grid
+					div.mdl-cell.mdl-cell--12-col
+						form#frmSearch
+							div.mdl-textfield.mdl-js-textfield.mdl-textfield--floating-label
+								label.mdl-textfield__label Search
+								input#txtCompanyName.mdl-textfield__input(type="search")
+
+		script(src="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js")
+		script(src="/static/app.js")

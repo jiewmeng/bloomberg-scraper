@@ -34,6 +34,7 @@ module.exports = {
 	 * Scrape for company URLs only
 	 */
 	scrapeAll: function(type) {
+		console.log('TRIGGERED SCRAPE ALL')
 		let startingCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('');
 
 		return Promise.map(startingCharacters, (letter) => {
