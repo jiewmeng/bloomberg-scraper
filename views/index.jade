@@ -5,6 +5,23 @@ html(lang="en")
 		meta(name="viewport", content="width=device-width, initial-scale=1.0")
 		link(rel="stylesheet", href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css")
 		link(rel="stylesheet", href="https://fonts.googleapis.com/icon?family=Material+Icons")
+		style.
+			.full-width {
+				width: 100%;
+			}
+
+			#searchResults td {
+				white-space: normal;
+			}
+
+			#searchResults td:nth-child(1) {
+				width: 30%;
+			}
+
+			#searchResults td:nth-child(2) {
+				width: 70%;
+			}
+
 	body
 		div.mdl-layout.mdl-js-layout.mdl-layout--fixed-header
 			header.mdl-layout__header
@@ -29,5 +46,11 @@ html(lang="en")
 								label.mdl-textfield__label Search
 								input#txtCompanyName.mdl-textfield__input(type="search")
 
+				div.mdl-grid
+					div.mdl-cell.mdl-cell--12-col
+						div#searchResults.full-width
+
+
 		script(src="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js")
+		script(src="https://cdnjs.cloudflare.com/ajax/libs/superagent/1.2.0/superagent.min.js")
 		script(src="/static/app.js")

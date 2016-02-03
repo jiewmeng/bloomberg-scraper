@@ -81,6 +81,7 @@ module.exports = {
 		let nextUrl;
 		// scrape listing page
 		console.log(`Scraping Type: ${type}, Starts with: ${startsWith}, Page: ${page}`);
+		console.time(`scrape:${type}-${startsWith}-${page}`);
 		return Promise.promisify(x(_getLisingUrl(type, startsWith, page), {
 			nextPageUrl: '.paging .nextBtnActive',
 			rows: x('#columnLeft table tbody tr', [{
@@ -89,10 +90,12 @@ module.exports = {
 			}])
 		}))()
 			.then((res) => {
+				console.timeEnd(`scrape:${type}-${startsWith}-${page}`);
 				console.log(`>>> Got response for ${type}, Starts with: ${startsWith}, Page: ${page}`);
 				nextUrl = res.nextPageUrl;
 
 				let date = new Date();
+				console.time(`map:${type}-${startsWith}-${page}`);
 				let companies = res.rows.map((row) => {
 					return {
 						name: row.title,
@@ -100,11 +103,14 @@ module.exports = {
 						lastUpdate: date
 					};
 				});
+				console.timeEnd(`map:${type}-${startsWith}-${page}`);
 
 				return new Promise((resolve, reject) => {
+					console.time(`save:${type}-${startsWith}-${page}`);
 					Company.collection.insert(companies, {
 						ordered: false
 					}, (err) => {
+						console.timeEnd(`save:${type}-${startsWith}-${page}`);
 						if (err) return reject(err);
 						resolve();
 					});
@@ -120,20 +126,20 @@ module.exports = {
 				// 	);
 				// });
 
-				let bulk = Company.collection.initializeUnorderedBulkOp();
-				res.rows.map((row) => {
-					bulk.find({ url: row.url }).upsert().updateOne({$set: {
-						url: row.url,
-						name: row.title
-					}});
-				});
+				// let bulk = Company.collection.initializeUnorderedBulkOp();
+				// res.rows.map((row) => {
+				// 	bulk.find({ url: row.url }).upsert().updateOne({$set: {
+				// 		url: row.url,
+				// 		name: row.title
+				// 	}});
+				// });
 
-				return new Promise((resolve, reject) => {
-					bulk.execute((err) => {
-						if (err) return reject(err);
-						resolve();
-					})
-				});
+				// return new Promise((resolve, reject) => {
+				// 	bulk.execute((err) => {
+				// 		if (err) return reject(err);
+				// 		resolve();
+				// 	})
+				// });
 			})
 			.then(() => {
 				return Progress.update(
@@ -166,7 +172,7 @@ module.exports = {
 							left--;
 							console.log(`set profile for ${company.name} (${left})`);
 						});
-				}, {concurrency: 6});
+				}, {concurrency: 20});
 			});
 	},
 
@@ -184,11 +190,42 @@ module.exports = {
 				$text: {
 					$search: companyName
 				}
-			}).toArray((err, res) => {
+			}).limit(100).toArray((err, res) => {
 				if (err) return reject(err);
 				resolve(res);
 			});
 		});
+	},
 
+	callForever: function(func, thisArg, argsArr, timeout) {
+		if (typeof timeout === 'undefined') timeout = 1000;
+
+		let funcRec = function() {
+			func.apply(thisArg, argsArr) // call the function
+				.then(function() {
+					// wait a while
+					return new Promise(function(resolve) {
+						setTimeout(resolve, timeout);
+					});
+				})
+				// then call the same function again
+				.then(funcRec)
+				// if theres an error, log it and call function again
+				.catch((err) => {
+					console.error(err.stack);
+					return func.apply(thisArg, argsArr);
+				});
+		};
+		return funcRec;
+	},
+
+	startProcessing: function() {
+		const TIMEOUT = 1000 * 60 * 2;
+
+		Promise.all([
+			this.callForever(this.scrapeAll, this, ['private'], TIMEOUT)(),
+			this.callForever(this.scrapeAll, this, ['public'], TIMEOUT)(),
+			this.callForever(this.scrapeCompanies, this, undefined, TIMEOUT)(),
+		]);
 	}
 };
