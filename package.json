@@ -1,38 +1,29 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
-  "main": "main.js",
+  "name": "bloomberg-scraper",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "electron main.js",
-    "dev": "electron --debug main.js",
-    "rebuild": "electron-rebuild main.js"
+    "start": "node index.js",
+    "dev": "node --debug index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/atom/electron-quick-start.git"
+    "url": "git+https://github.com/jiewmeng/bloomberg-scraper.git"
   },
-  "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial"
-  ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "keywords": [],
+  "author": "Jiew Meng",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/atom/electron-quick-start/issues"
+    "url": "https://github.com/jiewmeng/bloomberg-scraper/issues"
   },
-  "homepage": "https://github.com/atom/electron-quick-start#readme",
+  "homepage": "https://github.com/jiewmeng/bloomberg-scraper",
   "devDependencies": {
-    "electron-debug": "^0.5.1",
-    "electron-prebuilt": "^0.36.0",
-    "electron-rebuild": "^1.1.1",
-    "mongodb": "^2.1.4",
-    "mongoose": "^4.3.6",
-    "x-ray": "^2.0.3"
   },
   "dependencies": {
+    "mongodb": "^2.1.4",
+    "mongoose": "^4.3.6",
+    "x-ray": "^2.0.3",
     "bluebird": "^3.1.1",
     "co-body": "^4.0.0",
     "jade": "^1.11.0",
