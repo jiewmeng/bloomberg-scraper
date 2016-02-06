@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
-// mongoose.connect('mongodb://jiewmeng:U4nTrcMrqqFg@ds035653.mongolab.com:35653/bloomberg-scrape-app');
-mongoose.connect('mongodb://127.0.0.1:27017/bloomberg-scrape-app', {
+const MONGO_URL = (process.env.MONGOLAB_URI) ? MONGOLAB_URI : 'mongodb://127.0.0.1:27017/bloomberg-scrape-app';
+mongoose.connect(MONGO_URL, {
 	server: {
-		poolSize: 20
+		poolSize: 5
 	}
 });
 mongoose.Promise = require('bluebird');

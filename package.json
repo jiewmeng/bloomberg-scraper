@@ -31,5 +31,8 @@
     "koa-router": "^5.3.0",
     "koa-serve": "^0.1.7",
     "koa-views": "^4.0.1"
-  }
+  },
+	"engines": {
+		"node": "5.x"
+	}
 }
