@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-const MONGO_URL = (process.env.MONGOLAB_URI) ? MONGOLAB_URI : 'mongodb://127.0.0.1:27017/bloomberg-scrape-app';
+const MONGO_URL = (process.env.MONGOLAB_URI) ? process.env.MONGOLAB_URI : 'mongodb://127.0.0.1:27017/bloomberg-scrape-app';
 mongoose.connect(MONGO_URL, {
 	server: {
 		poolSize: 5
