@@ -97,12 +97,14 @@ module.exports = {
 				let date = new Date();
 				console.time(`map:${type}-${startsWith}-${page}`);
 				let companies = res.rows.map((row) => {
+					if (!row.url) return undefined;
 					return {
 						name: row.title,
 						url: row.url,
 						lastUpdate: date
 					};
 				});
+				companies = companies.filter(company => !!company.url);
 				console.timeEnd(`map:${type}-${startsWith}-${page}`);
 
 				return new Promise((resolve, reject) => {
@@ -152,7 +154,6 @@ module.exports = {
 	},
 
 	findMoreCompanies: function() {
-		console.log('finding more companies');
 		return Company.find({ profile: null })
 			.limit(100)
 			.then((companies) => {
@@ -162,6 +163,7 @@ module.exports = {
 				let left = companies.length;
 				console.log(`found ${left} companies`);
 				return Promise.map(companies, (company) => {
+					if (!company.url) return;
 					return this.scrapeCompany(company.url)
 						.then(function(profile) {
 							company.profile = profile;
