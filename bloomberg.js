@@ -22,7 +22,14 @@ module.exports = {
 	 * @return {Promise} resolved to company description
 	 */
 	scrapeCompany: function(url) {
-		return Promise.promisify(x(url, '#bDesc'))()
+		return Promise.promisify(x(url, {
+			privateProfile: '#bDesc',
+			publicProfile: '.profile__description'
+		}))()
+			.then(function(res) {
+				if (res.privateProfile) return res.privateProfile;
+				return res.publicProfile;
+			})
 			.catch(function(err) {
 				console.error(`error scrapping company ${url}`);
 				console.error(err.stack);
