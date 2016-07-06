@@ -6,7 +6,7 @@ let views = require('koa-views');
 let serve = require('koa-serve');
 let bloomberg = require('./bloomberg');
 let Promise = require('bluebird');
-let parse = require('co-body');
+let parse = require('koa-body');
 
 bloomberg.startProcessing();
 

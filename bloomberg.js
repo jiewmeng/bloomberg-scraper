@@ -7,7 +7,8 @@ var Promise = require('bluebird');
 
 var _getLisingUrl = function(type, startsWith, page) {
 	var firstRow = (page - 1) * 180;
-	var url = `http://www.bloomberg.com/research/common/symbollookup/symbollookup.asp?region=all&lookuptype=${type}&region=all&letterIn=${startsWith}&firstrow=${firstRow}`;
+	var url = `http://www.bloomberg.com/Research/common/symbollookup/symbollookup.asp?region=all&lookuptype=${type}&region=all&letterIn=${startsWith}&firstrow=${firstRow}`;
+	console.log(`listing url ${url}`)
 	return url;
 };
 var Company = require('./db').models.Company;
@@ -22,13 +23,15 @@ module.exports = {
 	 * @return {Promise} resolved to company description
 	 */
 	scrapeCompany: function(url) {
+		console.log(`Scrapping ${url}`)
 		return Promise.promisify(x(url, {
 			privateProfile: '#bDesc',
 			publicProfile: '.profile__description'
 		}))()
 			.then(function(res) {
 				if (res.privateProfile) return res.privateProfile;
-				return res.publicProfile;
+				if (res.publicProfile) return res.publicProfile;
+				return 'NOT FOUND';
 			})
 			.catch(function(err) {
 				console.error(`error scrapping company ${url}`);
@@ -88,7 +91,6 @@ module.exports = {
 		let nextUrl;
 		// scrape listing page
 		console.log(`Scraping Type: ${type}, Starts with: ${startsWith}, Page: ${page}`);
-		console.time(`scrape:${type}-${startsWith}-${page}`);
 		return Promise.promisify(x(_getLisingUrl(type, startsWith, page), {
 			nextPageUrl: '.paging .nextBtnActive',
 			rows: x('#columnLeft table tbody tr', [{
@@ -97,12 +99,10 @@ module.exports = {
 			}])
 		}))()
 			.then((res) => {
-				console.timeEnd(`scrape:${type}-${startsWith}-${page}`);
 				console.log(`>>> Got response for ${type}, Starts with: ${startsWith}, Page: ${page}`);
 				nextUrl = res.nextPageUrl;
 
 				let date = new Date();
-				console.time(`map:${type}-${startsWith}-${page}`);
 				let companies = res.rows.map((row) => {
 					if (!row.url) return undefined;
 					return {
@@ -112,14 +112,11 @@ module.exports = {
 					};
 				});
 				companies = companies.filter(company => !!company.url);
-				console.timeEnd(`map:${type}-${startsWith}-${page}`);
 
 				return new Promise((resolve, reject) => {
-					console.time(`save:${type}-${startsWith}-${page}`);
 					Company.collection.insert(companies, {
 						ordered: false
 					}, (err) => {
-						console.timeEnd(`save:${type}-${startsWith}-${page}`);
 						if (err) return reject(err);
 						resolve();
 					});
@@ -197,7 +194,7 @@ module.exports = {
 		return new Promise((resolve, reject) => {
 			Company.collection.find({
 				$text: {
-					$search: companyName
+					$search: `"${companyName}"`
 				}
 			}).limit(100).toArray((err, res) => {
 				if (err) return reject(err);
